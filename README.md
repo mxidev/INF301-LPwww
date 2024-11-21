@@ -1,7 +1,11 @@
-# LABFinalWWW
+# INF301 - Lenguajes de Programacion en WWW | Caso 19
 
 ## Integrantes
 
-Fabián Jiménez 201673503-8
-Sebastian Herrera 201551551-4
-Luis Álvarez 201904544-K
+Felix Bastias | 
+
+Jasmine Perez | 
+
+Sebastian Salgado | 
+
+Maximiliano Tapia | 202073552-2
