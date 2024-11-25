@@ -3,7 +3,7 @@ const {buildSchema} = require('graphql');
 const {graphqlHTTP} = require('express-graphql');
 const cors =require('cors');
 
-let productos = require('./productos'); //poniendo "let" le damos la cualidad de que el esquema responda
+let productos = require('./productos.js'); //poniendo "let" le damos la cualidad de que el esquema responda
 //const productos = require('./productos');
 
 const app = express();
