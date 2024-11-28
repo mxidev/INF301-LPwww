@@ -1,0 +1,15 @@
+.text-color-sushi {
+    color: rgb(235, 65, 65);
+}
+
+.text-color-sushi:hover {
+    color: rgb(189, 8, 8);
+    text-decoration: underline;
+    transition: text-decoration 0.2s;
+}
+
+.btn-outline-danger:hover {
+    color: white !important;
+    border-color: rgb(189, 8, 8) !important;
+    background-color: rgb(189, 8, 8) !important;
+}
