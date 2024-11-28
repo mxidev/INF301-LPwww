@@ -7,7 +7,7 @@ const fs = require('fs');
 
 let productos = require('./productos'); // Datos iniciales de productos
 let pedidos = []; // Almacena pedidos
-let usuarios = []; // Almacena usuarios
+let usuarios = require('./usuarios'); // Almacena usuarios
 
 const app = express();
 app.use(cors());
@@ -42,6 +42,7 @@ type Detalle {
     correo: String!
     direccion: String!
     rol: String!
+    message: String
   }
 
   type Alert {
@@ -70,6 +71,7 @@ input DetalleInput {
     correo: String!
     direccion: String!
     rol: String!
+    password: String!
   }
 
   type Query {
@@ -165,14 +167,40 @@ const root = {
   },
 
   // Gestión de usuarios
+
+
   registrarUsuario: ({ input }) => {
-    const id = String(usuarios.length + 1);
-    const nuevoUsuario = { id, ...input };
-    usuarios.push(nuevoUsuario);
-    return nuevoUsuario;
+    const { password, nombre, correo } = input;
+
+    try {
+        // Validación de contraseña
+        if (password.length < 8) {
+            console.log(`Intento fallido de registro: Contraseña muy corta para ${correo}`);
+            throw new Error('La contraseña debe tener al menos 8 caracteres.');
+        }
+
+        // Crear el nuevo usuario
+        const id = String(usuarios.length + 1);
+        const nuevoUsuario = { id, ...input };
+        usuarios.push(nuevoUsuario);
+
+        console.log(`Registro exitoso: Usuario ${nombre} (${correo}) creado correctamente.`);
+        return nuevoUsuario;
+    } catch (error) {
+        console.error(`Error durante el registro de ${correo}: ${error.message}`);
+        throw error;
+    }
   },
 
-  getUsuarios: () => usuarios,
+  
+  
+
+  getUsuarios: () => {
+    console.log("Usuarios actuales:", usuarios);
+    return usuarios;
+  },
+  
+  
 
   // Listar pedidos
   getPedidos: () => pedidos,
