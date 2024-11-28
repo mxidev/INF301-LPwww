@@ -1,7 +1,9 @@
 
 # dependencies
 */node_modules/
-/node_modules
+node_modules
+/appproductos/node_modules/
+/Lab1/node_modules
 /.pnp
 .pnp.js
 
