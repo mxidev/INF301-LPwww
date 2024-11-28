@@ -1,5 +1,55 @@
 const request = require("supertest");
-const app = require("../server");
+const app = require("../server"); //servidor express
+
+
+describe('Testing API endpoints', () => {
+    // Prueba para obtener todos los productos
+    it('Debería devolver todos los productos', async () => {
+        const query = `
+            query {
+                getProductos {
+                    id
+                    descripcion
+                    valor
+                }
+            }
+        `;
+        const response = await request(app).post('/graphql').send({ query });
+        expect(response.statusCode).toBe(200);
+        expect(response.body.data.getProductos.length).toBeGreaterThan(0);
+    });
+
+    // Prueba para crear un nuevo producto
+    it('Debería crear un nuevo producto', async () => {
+        const mutation = `
+            mutation {
+                addProd(input: { descripcion: "Nuevo Sushi", valor: 1000, stock: 10, carro: 0 }) {
+                    id
+                    descripcion
+                    valor
+                }
+            }
+        `;
+        const response = await request(app).post('/graphql').send({ query: mutation });
+        expect(response.statusCode).toBe(200);
+        expect(response.body.data.addProd.descripcion).toBe("Nuevo Sushi");
+    });
+
+    // Prueba para validar el stock insuficiente
+    it('Debería fallar si el stock es insuficiente', async () => {
+        const mutation = `
+            mutation {
+                addDet(input: { cantidad: 100, productoId: "1" }) {
+                    id
+                    cantidad
+                }
+            }
+        `;
+        const response = await request(app).post('/graphql').send({ query: mutation });
+        expect(response.statusCode).toBe(400); // Esperamos un error de stock insuficiente
+        expect(response.body.errors[0].message).toContain("Stock insuficiente");
+    });
+});
 
 //Prueba de validación de stock
 describe("Validación de stock al crear detalle de pedido", () => {
