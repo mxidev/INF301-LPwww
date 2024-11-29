@@ -1,25 +1,17 @@
 import React, { useState } from 'react';
-<<<<<<< HEAD
-import { Container } from 'react-bootstrap';
-import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-=======
 import { Container, Button, Col, Form, Row, Alert } from 'react-bootstrap';
->>>>>>> origin/main
 
 const Register = () => {
-<<<<<<< HEAD
     const [formData, setFormData] = useState({
-        nombre: 'seba salgado',
+        nombre: '',
         correo: '',
-        direccion: '1234 Calle Falsisima',
-        rol: 'Administrador',
+        direccion: '',
+        rol: '',
         password: '',
     });
 
-    const [message, setMessage] = useState(''); // Estado para mensajes de éxito o error
+    const [validated, setValidated] = useState(false);
+    const [message, setMessage] = useState('');
 
     const handleChange = (e) => {
         setFormData({
@@ -29,12 +21,15 @@ const Register = () => {
     };
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
-        console.log(formData);
-        if (!formData.nombre || !formData.correo || !formData.direccion || !formData.rol || !formData.password) {
-            setMessage('Por favor completa todos los campos.');
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+            setValidated(true);
             return;
         }
+
+        event.preventDefault();
         const query = `
             mutation {
                 registrarUsuario(input: {
@@ -51,7 +46,7 @@ const Register = () => {
                 }
             }
         `;
-        
+
         try {
             const response = await fetch('http://localhost:8080/graphql', {
                 method: 'POST',
@@ -75,97 +70,6 @@ const Register = () => {
     };
 
     return (
-        <Container fluid="lg">
-            <h2>Registro de Usuario</h2>
-            {message && (
-                <div
-                    style={{
-                        marginBottom: '20px',
-                        color: message.includes('Error') ? 'red' : 'green',
-                    }}
-                >
-                    {message}
-                </div>
-            )}
-            <Form onSubmit={handleSubmit}>
-                <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
-                    <Form.Label column sm={2}>
-                        Correo electrónico
-                    </Form.Label>
-                    <Col sm={10}>
-                        <Form.Control
-                            type="email"
-                            placeholder="mail@job.com"
-                            name="correo"
-                            value={formData.correo}
-                            onChange={handleChange}
-                        />
-                    </Col>
-                </Form.Group>
-
-                <Form.Group as={Row} className="mb-3" controlId="formHorizontalPassword">
-                    <Form.Label column sm={2}>
-                        Contraseña
-                    </Form.Label>
-                    <Col sm={10}>
-                        <Form.Control
-                            type="password"
-                            placeholder="*******"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                        />
-                    </Col>
-                    <Form.Text muted>
-                        La contraseña debe tener 8-20 caracteres, entre letras y números,
-                        y no debe contener caracteres especiales, espacios ni emojis.
-                    </Form.Text>
-                </Form.Group>
-                <fieldset>
-                    <Form.Group as={Row} className="mb-3">
-                        <Form.Label as="legend" column sm={2}>
-                            Roles de usuario
-                        </Form.Label>
-                        <Col sm={10}>
-                            <Form.Check
-                                type="radio"
-                                label="Administrador"
-                                name="rol"
-                                value="Administrador"
-                                checked={formData.rol === "Administrador"}
-                                onChange={handleChange}
-                            />
-                            <Form.Check
-                                type="radio"
-                                label="Delivery"
-                                name="rol"
-                                value="Delivery"
-                                checked={formData.rol === "Delivery"}
-                                onChange={handleChange}
-                            />
-                            <Form.Check
-                                type="radio"
-                                label="Comprador"
-                                name="rol"
-                                value="Comprador"
-                                checked={formData.rol === "Comprador"}
-                                onChange={handleChange}
-                            />
-                        </Col>
-                    </Form.Group>
-                </fieldset>
-=======
-    const [validated, setValidated] = useState(false);
-
-    const handleSubmit = (event) => {
-        const form = event.currentTarget;
-        if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        setValidated(true);
-    };
-    return (
         <Container className="d-flex align-items-center justify-content-center vh-100">
             <Row className="w-100">
                 <Col md={6} lg={5} className="mx-auto p-4 shadow rounded bg-white">
@@ -173,6 +77,17 @@ const Register = () => {
                     <p className="text-center text-muted mb-4">
                         Regístrate para acceder a todos nuestros servicios.
                     </p>
+
+                    {message && (
+                        <div
+                            style={{
+                                marginBottom: '20px',
+                                color: message.includes('Error') ? 'red' : 'green',
+                            }}
+                        >
+                            {message}
+                        </div>
+                    )}
 
                     <Form noValidate validated={validated} onSubmit={handleSubmit}>
                         <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
@@ -183,6 +98,9 @@ const Register = () => {
                                 <Form.Control
                                     type="email"
                                     placeholder="mail@job.com"
+                                    name="correo"
+                                    value={formData.correo}
+                                    onChange={handleChange}
                                     required
                                 />
                                 <Form.Control.Feedback type="invalid">
@@ -190,7 +108,6 @@ const Register = () => {
                                 </Form.Control.Feedback>
                             </Col>
                         </Form.Group>
->>>>>>> origin/main
 
                         <Form.Group as={Row} className="mb-3" controlId="formHorizontalPassword">
                             <Form.Label column sm={3}>
@@ -200,6 +117,9 @@ const Register = () => {
                                 <Form.Control
                                     type="password"
                                     placeholder="********"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
                                     required
                                     minLength={8}
                                     maxLength={20}
@@ -222,22 +142,28 @@ const Register = () => {
                                     <Form.Check
                                         type="radio"
                                         label="Administrador"
-                                        name="formHorizontalRadios"
-                                        id="formHorizontalRadios1"
+                                        name="rol"
+                                        value="Administrador"
+                                        checked={formData.rol === "Administrador"}
+                                        onChange={handleChange}
                                         required
                                     />
                                     <Form.Check
                                         type="radio"
                                         label="Delivery"
-                                        name="formHorizontalRadios"
-                                        id="formHorizontalRadios2"
+                                        name="rol"
+                                        value="Delivery"
+                                        checked={formData.rol === "Delivery"}
+                                        onChange={handleChange}
                                         required
                                     />
                                     <Form.Check
                                         type="radio"
                                         label="Comprador"
-                                        name="formHorizontalRadios"
-                                        id="formHorizontalRadios3"
+                                        name="rol"
+                                        value="Comprador"
+                                        checked={formData.rol === "Comprador"}
+                                        onChange={handleChange}
                                         required
                                     />
                                     <Form.Control.Feedback type="invalid">
