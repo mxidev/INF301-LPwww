@@ -1,20 +1,64 @@
 import React, { useState } from "react";
 import './assets/custom.css';
 import { Container, Row, Col, Button, Form, Alert } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../UserContext";
 
 const Login = () => {
-    const [validated, setValidated] = useState(false);
+    const [validated, setValidated] = useState(false); // Agrega esta línea para definir el estado
+    const navigate = useNavigate();
+    const { setUser } = useUser();
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
+        event.preventDefault();
         const form = event.currentTarget;
+
         if (form.checkValidity() === false) {
-            event.preventDefault();
             event.stopPropagation();
+            setValidated(true);
+            return;
         }
 
         setValidated(true);
-    };
 
+        const correo = form["formEmail"].value;
+        const password = form["formPassword"].value;
+
+        const query = `
+          mutation {
+            loginUsuario(correo: "${correo}", password: "${password}") {
+              id
+              nombre
+              correo
+              rol
+            }
+          }
+        `;
+
+        try {
+            const response = await fetch("http://localhost:8080/graphql", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ query }),
+            });
+
+            const result = await response.json();
+
+            if (result.errors) {
+                alert(`Error: ${result.errors[0].message}`);
+            } else {
+                const usuario = result.data.loginUsuario;
+                setUser(usuario);
+                alert(`Bienvenido, ${usuario.nombre} (${usuario.rol})`);
+                navigate("/p1");
+            }
+        } catch (error) {
+            console.error("Error durante el inicio de sesión:", error);
+            alert("Error al conectar con el servidor.");
+        }
+    };
 
     return (
         <Container className="d-flex align-items-center justify-content-center vh-100">
@@ -71,6 +115,6 @@ const Login = () => {
             </Row>
         </Container>
     );
-}
+};
 
 export default Login;

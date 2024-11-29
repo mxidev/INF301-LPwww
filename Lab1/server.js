@@ -90,6 +90,7 @@ input DetalleInput {
     anularPedido(id: ID!, motivo: String!): Alert
 
     registrarUsuario(input: UsuarioInput): Usuario
+    loginUsuario(correo: String!, password: String!): Usuario
   }
 `);
 
@@ -192,14 +193,27 @@ const root = {
     }
   },
 
-  
-  
+  loginUsuario: ({ correo, password }) => {
+    const usuario = usuarios.find((u) => u.correo === correo);
+
+    if (!usuario) {
+      console.error(`Error: Usuario con correo ${correo} no encontrado.`);
+      throw new Error('Usuario no encontrado.');
+    }
+
+    if (usuario.password !== password) {
+      console.error(`Error: Contraseña incorrecta para el usuario ${correo}.`);
+      throw new Error('Credenciales incorrectas.');
+    }
+
+    console.log(`Usuario ${usuario.nombre} autenticado correctamente.`);
+    return usuario; // Devuelve la información del usuario
+  },
 
   getUsuarios: () => {
     console.log("Usuarios actuales:", usuarios);
     return usuarios;
   },
-  
   
 
   // Listar pedidos

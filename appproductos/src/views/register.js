@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Container, Button, Col, Form, Row, Alert } from 'react-bootstrap';
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         nombre: '',
         correo: '',

@@ -5,10 +5,13 @@ import Main from './App';
 import reportWebVitals from './reportWebVitals';
 import { client } from './graphql/ApolloClient';
 import { ApolloProvider } from '@apollo/client';
+import { UserProvider } from "./UserContext";
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <Main />
+    <UserProvider>
+      <Main />
+    </UserProvider>
   </ApolloProvider>,
   document.getElementById('root')
 );

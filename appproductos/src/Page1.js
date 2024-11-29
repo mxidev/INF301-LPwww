@@ -1,16 +1,12 @@
-//import logo from './logo.svg';
 import './Page1.css';
-//import {ApolloProvider} from 'react-apollo';
-//import { client } from './graphql/ApolloClient';
 import {GET_PRODUCTOS} from './graphql/Queries';
 import { SET_PRODUCTO } from './graphql/Mutations';
 import {useQuery} from '@apollo/client';
 import {useMutation} from '@apollo/client';
-import { Link } from 'react-router-dom';
-
-import { useState, useEffect } from "react";
-import { Card, ListGroup, ListGroupItem, Container, CardGroup, Row, Col} from 'react-bootstrap';
+import { Container} from 'react-bootstrap';
 import { MDBContainer } from 'mdbreact';
+
+
 
 function Page1() {
   const { loading, error, data } = useQuery(GET_PRODUCTOS);
