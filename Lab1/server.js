@@ -1,7 +1,7 @@
 const express = require('express');
-const {buildSchema} = require('graphql');
-const {graphqlHTTP} = require('express-graphql');
-const cors =require('cors');
+const { buildSchema } = require('graphql');
+const { graphqlHTTP } = require('express-graphql');
+const cors = require('cors');
 
 let productos = require('./productos'); //poniendo "let" le damos la cualidad de que el esquema responda
 //const productos = require('./productos');
@@ -62,14 +62,14 @@ const schema = buildSchema(`
 //deleteCurso(id: ID!) : Alert
 
 const root = { //aquí va todo el código relacionado a la conexión con la base de datos
-    getProductos(){
+    getProductos() {
         return productos;
     },
-    getProducto( { id } ){
+    getProducto({ id }) {
         console.log(id); //solo para que se muestre por consola que va cogiendo
-        return productos.find( (producto) => id == producto.id); //busca el objeto comparando el valor actual dado (id) con el curso.id del objeto con el que compara actualmente
+        return productos.find((producto) => id == producto.id); //busca el objeto comparando el valor actual dado (id) con el curso.id del objeto con el que compara actualmente
     },
-    addProd( { input} ){
+    addProd({ input }) {
         const { descripcion, valor, stock } = input;
         const id = String(productos.length + 1);
         const producto = { id, descripcion, valor, stock };
@@ -77,19 +77,19 @@ const root = { //aquí va todo el código relacionado a la conexión con la base
         return producto;
     },
     //addCurso( { input } ){
-    updateProd( { id, input } ){
-        const { descripcion, valor, stock , carro} = input;
-        const indice = productos.findIndex( (producto) => id === producto.id ); //== está buscando la coincidencia de los contenidos (0 = false), pero con ==, requiere que coincida tanto tipo como contenido (0 != false) 
+    updateProd({ id, input }) {
+        const { descripcion, valor, stock, carro } = input;
+        const indice = productos.findIndex((producto) => id === producto.id); //== está buscando la coincidencia de los contenidos (0 = false), pero con ==, requiere que coincida tanto tipo como contenido (0 != false) 
         const producto = productos[indice];
 
         const nuevoProducto = Object.assign(producto, { descripcion, valor, stock, carro });
         productos[indice] = nuevoProducto; //OJO QUIZÁS ESTÁ MAL
 
-        return nuevoProducto;        
+        return nuevoProducto;
     },
     //updateCurso( { id, input } )
-    deleteProd( { id }){
-        productos = productos.filter( (producto) => producto.id != id );
+    deleteProd({ id }) {
+        productos = productos.filter((producto) => producto.id != id);
         return {
             message: `El producto con id ${id} fue eliminado`
         }
@@ -97,7 +97,7 @@ const root = { //aquí va todo el código relacionado a la conexión con la base
 }
 
 
-app.get('/', function(req,res){
+app.get('/', function (req, res) {
     //res.send("Bienvenido");
     res.json(productos);
 })
@@ -110,6 +110,6 @@ app.use('/graphql', graphqlHTTP({
 }))
 
 
-app.listen(8080, function(){
+app.listen(8080, function () {
     console.log("Servidor Iniciado");
 })

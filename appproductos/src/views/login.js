@@ -56,7 +56,7 @@ const Login = () => {
                             </a>
                         </Form.Group>
 
-                        <Button type="submit" className="w-100 mb-3 btn btn-outline-danger">
+                        <Button href="/p1" type="submit" className="w-100 mb-3 btn btn-outline-danger">
                             Iniciar sesión
                         </Button>
                     </Form>
