@@ -1,18 +1,76 @@
 import React, { useState } from 'react';
 import { Container, Button, Col, Form, Row, Alert } from 'react-bootstrap';
-
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
-    const [validated, setValidated] = useState(false);
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        nombre: '',
+        correo: '',
+        direccion: '',
+        rol: '',
+        password: '',
+    });
 
-    const handleSubmit = (event) => {
+    const [validated, setValidated] = useState(false);
+    const [message, setMessage] = useState('');
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleSubmit = async (event) => {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
+            setValidated(true);
+            return;
         }
-        setValidated(true);
+
+        event.preventDefault();
+        const query = `
+            mutation {
+                registrarUsuario(input: {
+                    nombre: "${formData.nombre}",
+                    correo: "${formData.correo}",
+                    direccion: "${formData.direccion}",
+                    rol: "${formData.rol}",
+                    password: "${formData.password}"
+                }) {
+                    id
+                    nombre
+                    correo
+                    rol
+                }
+            }
+        `;
+
+        try {
+            const response = await fetch('http://localhost:8080/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query }),
+            });
+
+            const result = await response.json();
+
+            if (result.errors) {
+                setMessage(`Error: ${result.errors[0].message}`);
+            } else {
+                setMessage(`Usuario ${result.data.registrarUsuario.nombre} registrado con éxito!`);
+            }
+        } catch (error) {
+            console.error('Error al registrar el usuario:', error);
+            setMessage('Error al conectar con el servidor.');
+        }
     };
+
     return (
         <Container className="d-flex align-items-center justify-content-center vh-100">
             <Row className="w-100">
@@ -21,6 +79,17 @@ const Register = () => {
                     <p className="text-center text-muted mb-4">
                         Regístrate para acceder a todos nuestros servicios.
                     </p>
+
+                    {message && (
+                        <div
+                            style={{
+                                marginBottom: '20px',
+                                color: message.includes('Error') ? 'red' : 'green',
+                            }}
+                        >
+                            {message}
+                        </div>
+                    )}
 
                     <Form noValidate validated={validated} onSubmit={handleSubmit}>
                         <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
@@ -31,6 +100,9 @@ const Register = () => {
                                 <Form.Control
                                     type="email"
                                     placeholder="mail@job.com"
+                                    name="correo"
+                                    value={formData.correo}
+                                    onChange={handleChange}
                                     required
                                 />
                                 <Form.Control.Feedback type="invalid">
@@ -47,6 +119,9 @@ const Register = () => {
                                 <Form.Control
                                     type="password"
                                     placeholder="********"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
                                     required
                                     minLength={8}
                                     maxLength={20}
@@ -69,22 +144,28 @@ const Register = () => {
                                     <Form.Check
                                         type="radio"
                                         label="Administrador"
-                                        name="formHorizontalRadios"
-                                        id="formHorizontalRadios1"
+                                        name="rol"
+                                        value="Administrador"
+                                        checked={formData.rol === "Administrador"}
+                                        onChange={handleChange}
                                         required
                                     />
                                     <Form.Check
                                         type="radio"
                                         label="Delivery"
-                                        name="formHorizontalRadios"
-                                        id="formHorizontalRadios2"
+                                        name="rol"
+                                        value="Delivery"
+                                        checked={formData.rol === "Delivery"}
+                                        onChange={handleChange}
                                         required
                                     />
                                     <Form.Check
                                         type="radio"
                                         label="Comprador"
-                                        name="formHorizontalRadios"
-                                        id="formHorizontalRadios3"
+                                        name="rol"
+                                        value="Comprador"
+                                        checked={formData.rol === "Comprador"}
+                                        onChange={handleChange}
                                         required
                                     />
                                     <Form.Control.Feedback type="invalid">
@@ -113,6 +194,6 @@ const Register = () => {
             </Row>
         </Container>
     );
-}
+};
 
 export default Register;
