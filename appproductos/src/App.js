@@ -1,11 +1,11 @@
 import React from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
-import Navibar from "./Navibar";
-import Footer from "./FooterPage";
+import Navibar from "./views/Navibar";
+import Footer from "./views/FooterPage";
 import Login from './views/login';
 import Register from './views/register';
-import Page1 from "./Page1";
-import Carro from "./Carro";
+import Page1 from "./views/Page1";
+import Carro from "./views/Carro";
 
 function App() {
   const hideNavRoutes = ["/", "/register"];

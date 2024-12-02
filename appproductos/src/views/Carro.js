@@ -1,11 +1,11 @@
 //import logo from './logo.svg';
-import './Carro.css';
+import './assets/styles/Carro.css';
 //import {ApolloProvider} from 'react-apollo';
 //import { client } from './graphql/ApolloClient';
 import {  Container} from 'react-bootstrap';
 import { MDBContainer } from 'mdbreact';
-import {GET_PRODUCTOS} from './graphql/Queries';
-import { SET_PRODUCTO } from './graphql/Mutations';
+import {GET_PRODUCTOS} from '../graphql/Queries';
+import { SET_PRODUCTO } from '../graphql/Mutations';
 import {useQuery} from '@apollo/client';
 import {useMutation} from '@apollo/client';
 import { Link } from 'react-router-dom';
@@ -64,7 +64,7 @@ function Carro() {
               }
         } )}
       </div>
-      <Link to="/"><button type="button" valor="1"  >Volver al catálogo</button></Link>
+      <Link to="/p1"><button type="button" valor="1"  >Volver al catálogo</button></Link>
       </Container>
     </div>
   );

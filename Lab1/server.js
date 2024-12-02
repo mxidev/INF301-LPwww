@@ -1,269 +1,181 @@
-//Dependencias y Configuración
 const express = require('express');
 const { buildSchema } = require('graphql');
 const { graphqlHTTP } = require('express-graphql');
 const cors = require('cors');
-const PDFDocument = require('pdfkit');
-const fs = require('fs');
 
-let productos = require('./productos'); // Datos iniciales de productos
+let productos = require('./productos'); //poniendo "let" le damos la cualidad de que el esquema responda
+//const productos = require('./productos');
 let pedidos = []; // Almacena pedidos
 let usuarios = require('./usuarios'); // Almacena usuarios
 
 const app = express();
+
 app.use(cors());
-
-// Definición del esquema GraphQL
+//firmas
 const schema = buildSchema(`
-  type Producto {
-    id: ID!
-    descripcion: String!
-    valor: Int!
-    stock: Int!
-    foto: String
-    carro: Int
-  }
-
-  type Detalle {
-    id: ID!
-    cantidad: Int
-  }
-
-  type Pedido {
-    id: ID!
-    productos: [Producto]!
-    total: Int!
-    cliente: Usuario
-    estado: String!
-  }
-
-  type Usuario {
-    id: ID!
-    nombre: String!
-    correo: String!
-    direccion: String!
-    rol: String!
-    message: String
-  }
-
-  type Alert {
-    message: String
-  }
-
-  input ProductoInput {
-    descripcion: String!
-    valor: Int!
-    stock: Int!
-    carro: Int
-  }
-
-  input DetalleInput {
-    cantidad: Int!
-    productoId: ID!
-  }
-
-  input PedidoInput {
-    productos: [ID!]!
-    clienteId: ID!
-  }
-
-  input UsuarioInput {
-    nombre: String!
-    correo: String!
-    direccion: String!
-    rol: String!
-    password: String!
-  }
-
-  type Query {
-    getProductos: [Producto]
-    getPedidos: [Pedido]
-    getUsuarios: [Usuario]
-    getProducto(id: ID!): Producto
-  }
-
-  type Mutation {
-    addProd(input: ProductoInput): Producto
-    addDet(input: DetalleInput): Detalle
-    updateProd(id: ID!, input: ProductoInput): Producto
-    deleteProd(id: ID!): Alert
-
-    crearPedido(input: PedidoInput): Pedido
-    anularPedido(id: ID!, motivo: String!): Alert
-
-    registrarUsuario(input: UsuarioInput): Usuario
-    loginUsuario(correo: String!, password: String!): Usuario
-  }
-`);
-
-// Resolvers
-const root = {
-  // Gestión de productos
-  getProductos: () => productos,
-  addProd: ({ input }) => {
-    const id = String(productos.length + 1);
-    const nuevoProducto = { id, ...input };
-    productos.push(nuevoProducto);
-    return nuevoProducto;
-  },
-  addProd({ input }) {
-    const { descripcion, valor, stock } = input;
-    const id = String(productos.length + 1);
-    const producto = { id, descripcion, valor, stock };
-    productos.push(producto);
-    return producto;
-},
-  
-  addDet: ({ input }) => {
-    const { cantidad, productoId } = input;
-  
-    // Busca el producto
-    const producto = productos.find((p) => p.id === productoId);
-    if (!producto) {
-      throw new Error(`Producto con ID ${productoId} no encontrado`);
+    type Producto{
+        id: ID!
+        descripcion: String!
+        valor: Int
+        stock: Int
+        foto: String
+        carro: Int 
     }
-  
-    // Verifica el stock
-    if (producto.stock < cantidad) {
-      throw new Error(`Stock insuficiente para el producto ${producto.descripcion}`);
+
+    type Detalle{
+        id: ID!
+        cantidad: Int
     }
-  
-    // Reduce el stock
-    producto.stock -= cantidad;
-  
-    // Crea un detalle de pedido (simulado)
-    const detalle = { id: String(Math.random()), cantidad };
-    return detalle;
-  },
-  
-  updateProd: ({ id, input }) => {
-    const index = productos.findIndex((prod) => prod.id === id);
-    if (index === -1) throw new Error('Producto no encontrado');
-    productos[index] = { ...productos[index], ...input };
-    return productos[index];
-  },
-  
-  deleteProd: ({ id }) => {
-    productos = productos.filter((prod) => prod.id !== id);
-    return { message: `Producto con id ${id} eliminado` };
-  },
 
-  // Gestión de pedidos
-  crearPedido: ({ input }) => {
-    const { productos: productosIds, clienteId } = input;
-    const cliente = usuarios.find((u) => u.id === clienteId);
-    if (!cliente) throw new Error('Cliente no encontrado');
+    type Alert{
+        message: String
+    }
 
-    const productosPedido = productosIds.map((id) => {
-      const producto = productos.find((p) => p.id === id);
-      if (!producto || producto.stock <= 0) throw new Error(`Stock insuficiente para producto con id ${id}`);
-      producto.stock -= 1; // Actualiza el stock
-      return producto;
-    });
+    input ProductoInput{
+        descripcion: String!
+        valor: Int
+        stock: Int
+        carro: Int
+    }
 
-    const total = productosPedido.reduce((acc, prod) => acc + prod.valor, 0);
-    const nuevoPedido = { id: String(pedidos.length + 1), productos: productosPedido, total, cliente, estado: 'Pendiente' };
-    pedidos.push(nuevoPedido);
+    input DetalleInput{
+        cantidad: Int
+    }
 
-    generarBoleta(nuevoPedido); // Genera boleta
-    return nuevoPedido;
-  },
-  anularPedido: ({ id, motivo }) => {
-    const pedido = pedidos.find((p) => p.id === id);
-    if (!pedido) throw new Error('Pedido no encontrado');
-    if (pedido.estado !== 'Pendiente') throw new Error('Solo se pueden anular pedidos pendientes');
+    type Usuario {
+      id: ID!
+      nombre: String!
+      correo: String!
+      direccion: String!
+      rol: String!
+      message: String
+    }
+    
+    input UsuarioInput {
+      nombre: String!
+      correo: String!
+      direccion: String!
+      rol: String!
+      password: String!
+    }
 
-    pedido.estado = 'Anulado';
-    return { message: `Pedido ${id} anulado. Motivo: ${motivo}` };
-  },
+    type Mutation {
+        addProd(input: ProductoInput): Producto
+        updateProd(id: ID!, input: ProductoInput): Producto
+        deleteProd(id: ID!) : Alert
+        addDet(input: DetalleInput): Detalle
+        updateDet(id: ID!, input: DetalleInput): Detalle
+        deleteDet(id: ID!) : Alert
 
-  getProducto({ id }) {
-      console.log(id); //solo para que se muestre por consola que va cogiendo
-      return productos.find((producto) => id == producto.id); //busca el objeto comparando el valor actual dado (id) con el curso.id del objeto con el que compara actualmente
-  },
+        registrarUsuario(input: UsuarioInput): Usuario
+        loginUsuario(correo: String!, password: String!): Usuario
+        
+    }
 
-  // Gestión de usuarios
-  registrarUsuario: ({ input }) => {
-    const { password, nombre, correo } = input;
+    type Query {
+        getProductos: [Producto]
+        getProducto(id: ID!): Producto
+    }
+`); // Plantillas
+//addCurso(input: CursoInput): Curso 
+//addCurso(titulo: String!, visitas: Int)
+//updateCurso(id: ID!, input: CursoInput): Curso
+//deleteCurso(id: ID!) : Alert
 
-    try {
-        // Validación de contraseña
-        if (password.length < 8) {
-            console.log(`Intento fallido de registro: Contraseña muy corta para ${correo}`);
-            throw new Error('La contraseña debe tener al menos 8 caracteres.');
+const root = { //aquí va todo el código relacionado a la conexión con la base de datos
+    getProductos() {
+        return productos;
+    },
+    getProducto({ id }) {
+        console.log(id); //solo para que se muestre por consola que va cogiendo
+        return productos.find((producto) => id == producto.id); //busca el objeto comparando el valor actual dado (id) con el curso.id del objeto con el que compara actualmente
+    },
+    addProd({ input }) {
+        const { descripcion, valor, stock } = input;
+        const id = String(productos.length + 1);
+        const producto = { id, descripcion, valor, stock };
+        productos.push(producto);
+        return producto;
+    },
+    //addCurso( { input } ){
+    updateProd({ id, input }) {
+        const { descripcion, valor, stock, carro } = input;
+        const indice = productos.findIndex((producto) => id === producto.id); //== está buscando la coincidencia de los contenidos (0 = false), pero con ==, requiere que coincida tanto tipo como contenido (0 != false) 
+        const producto = productos[indice];
+
+        const nuevoProducto = Object.assign(producto, { descripcion, valor, stock, carro });
+        productos[indice] = nuevoProducto; //OJO QUIZÁS ESTÁ MAL
+
+        return nuevoProducto;
+    },
+    //updateCurso( { id, input } )
+    deleteProd({ id }) {
+        productos = productos.filter((producto) => producto.id != id);
+        return {
+            message: `El producto con id ${id} fue eliminado`
         }
+    },
 
-        // Crear el nuevo usuario
-        const id = String(usuarios.length + 1);
-        const nuevoUsuario = { id, ...input };
-        usuarios.push(nuevoUsuario);
+    // Gestión de usuarios
+    registrarUsuario: ({ input }) => {
+      const { password, nombre, correo } = input;
 
-        console.log(`Registro exitoso: Usuario ${nombre} (${correo}) creado correctamente.`);
-        return nuevoUsuario;
-    } catch (error) {
-        console.error(`Error durante el registro de ${correo}: ${error.message}`);
-        throw error;
-    }
-  },
+      try {
+          // Validación de contraseña
+          if (password.length < 8) {
+              console.log(`Intento fallido de registro: Contraseña muy corta para ${correo}`);
+              throw new Error('La contraseña debe tener al menos 8 caracteres.');
+          }
 
-  loginUsuario: ({ correo, password }) => {
-    const usuario = usuarios.find((u) => u.correo === correo);
+          // Crear el nuevo usuario
+          const id = String(usuarios.length + 1);
+          const nuevoUsuario = { id, ...input };
+          usuarios.push(nuevoUsuario);
 
-    if (!usuario) {
-      console.error(`Error: Usuario con correo ${correo} no encontrado.`);
-      throw new Error('Usuario no encontrado.');
-    }
+          console.log(`Registro exitoso: Usuario ${nombre} (${correo}) creado correctamente.`);
+          return nuevoUsuario;
+      } catch (error) {
+          console.error(`Error durante el registro de ${correo}: ${error.message}`);
+          throw error;
+      }
+    },
 
-    if (usuario.password !== password) {
-      console.error(`Error: Contraseña incorrecta para el usuario ${correo}.`);
-      throw new Error('Credenciales incorrectas.');
-    }
+    loginUsuario: ({ correo, password }) => {
+      const usuario = usuarios.find((u) => u.correo === correo);
 
-    console.log(`Usuario ${usuario.nombre} autenticado correctamente.`);
-    return usuario; // Devuelve la información del usuario
-  },
+      if (!usuario) {
+        console.error(`Error: Usuario con correo ${correo} no encontrado.`);
+        throw new Error('Usuario no encontrado.');
+      }
 
-  getUsuarios: () => {
-    console.log("Usuarios actuales:", usuarios);
-    return usuarios;
-  },
-  
+      if (usuario.password !== password) {
+        console.error(`Error: Contraseña incorrecta para el usuario ${correo}.`);
+        throw new Error('Credenciales incorrectas.');
+      }
 
-  // Listar pedidos
-  getPedidos: () => pedidos,
-};
+      console.log(`Usuario ${usuario.nombre} autenticado correctamente.`);
+      return usuario; // Devuelve la información del usuario
+    },
 
-// Generar boleta en PDF
-const generarBoleta = (pedido) => {
-  const doc = new PDFDocument();
-  const filename = `boleta_${pedido.id}.pdf`;
+    getUsuarios: () => {
+      console.log("Usuarios actuales:", usuarios);
+      return usuarios;
+    },
+}
 
-  doc.pipe(fs.createWriteStream(filename));
-  doc.fontSize(16).text(`Boleta N°: ${pedido.id}`);
-  doc.fontSize(12).text(`Cliente: ${pedido.cliente.nombre}`);
-  doc.text('--- Productos ---');
-  pedido.productos.forEach((p) => doc.text(`${p.descripcion} - $${p.valor}`));
-  doc.text(`--- Total: $${pedido.total} ---`);
-  doc.end();
 
-  console.log(`Boleta generada: ${filename}`);
-};
-
-// Middleware de GraphQL
-app.use(
-  '/graphql',
-  graphqlHTTP({
-    schema,
-    rootValue: root,
-    graphiql: true,
-  })
-);
-
-//Rutas y Middleware
 app.get('/', function (req, res) {
-  //res.send("Bienvenido");
-  res.json(productos);
+    //res.send("Bienvenido");
+    res.json(productos);
 })
+
+// middleware
+app.use('/graphql', graphqlHTTP({
+    schema: schema,
+    rootValue: root,
+    graphiql: true
+}))
+
 
 // Solo inicia el servidor si no estás en modo test
 if (process.env.NODE_ENV !== 'test') {
@@ -271,5 +183,3 @@ if (process.env.NODE_ENV !== 'test') {
     console.log('Servidor Iniciado en http://localhost:8080/graphql');
   });
 }
-
-module.exports = app;

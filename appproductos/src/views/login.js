@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import './assets/custom.css';
+import './assets/styles/custom.css';
 import { Container, Row, Col, Button, Form, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../UserContext";
 
 const Login = () => {
-    const [validated, setValidated] = useState(false); // Agrega esta línea para definir el estado
+    const [validated, setValidated] = useState(false);
+    const [loginError, setLoginError] = useState(false); // Nuevo estado para errores de login
     const navigate = useNavigate();
     const { setUser } = useUser();
 
@@ -20,6 +21,7 @@ const Login = () => {
         }
 
         setValidated(true);
+        setLoginError(false); // Resetear el estado de error
 
         const correo = form["formEmail"].value;
         const password = form["formPassword"].value;
@@ -47,12 +49,12 @@ const Login = () => {
             const result = await response.json();
 
             if (result.errors) {
-                alert(`Error: ${result.errors[0].message}`);
+                setLoginError(true); // Activar el estado de error
             } else {
                 const usuario = result.data.loginUsuario;
-                setUser(usuario);
+                setUser(usuario); // Guarda el usuario en el contexto
                 alert(`Bienvenido, ${usuario.nombre} (${usuario.rol})`);
-                navigate("/p1");
+                navigate("/p1"); // Redirige a /p1
             }
         } catch (error) {
             console.error("Error durante el inicio de sesión:", error);
@@ -75,9 +77,10 @@ const Login = () => {
                                 type="email"
                                 placeholder="empleado@job.com"
                                 required
+                                isInvalid={loginError} // Marca como inválido si hay error
                             />
                             <Form.Control.Feedback type="invalid">
-                                Debe ingresar un correo electrónico válido.
+                                {loginError ? "Usuario no encontrado." : "Debe ingresar un correo electrónico válido."}
                             </Form.Control.Feedback>
                         </Form.Group>
 
@@ -87,9 +90,10 @@ const Login = () => {
                                 type="password"
                                 placeholder="********"
                                 required
+                                isInvalid={loginError} // Marca como inválido si hay error
                             />
                             <Form.Control.Feedback type="invalid">
-                                Debe ingresar una contraseña válida.
+                                {loginError ? "Contraseña incorrecta." : "Debe ingresar una contraseña válida."}
                             </Form.Control.Feedback>
                         </Form.Group>
 
@@ -100,7 +104,7 @@ const Login = () => {
                             </a>
                         </Form.Group>
 
-                        <Button href="/p1" type="submit" className="w-100 mb-3 btn btn-outline-danger">
+                        <Button type="submit" className="w-100 mb-3 btn btn-outline-danger">
                             Iniciar sesión
                         </Button>
                     </Form>

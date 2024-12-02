@@ -1,6 +1,6 @@
-import './Page1.css';
-import {GET_PRODUCTOS} from './graphql/Queries';
-import { SET_PRODUCTO } from './graphql/Mutations';
+import '../views/assets/styles/Page1.css';
+import {GET_PRODUCTOS} from '../graphql/Queries';
+import { SET_PRODUCTO } from '../graphql/Mutations';
 import {useQuery} from '@apollo/client';
 import {useMutation} from '@apollo/client';
 import { Container} from 'react-bootstrap';

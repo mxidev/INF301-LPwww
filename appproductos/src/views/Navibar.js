@@ -1,7 +1,7 @@
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
-import './bootstrap.min.css';
-import { useUser } from "./UserContext";
-import logo from './logoinf.png';
+import '../views/assets/styles/bootstrap.min.css';
+import { useUser } from "../UserContext";
+import logo from '../views/assets//logoinf.png';
 
 function Navibar(props) { // Cambiar "navibar" a "Navibar"
     const { user } = useUser(); // Asegúrate de usar la variable correcta "user" en lugar de "User"
@@ -9,7 +9,7 @@ function Navibar(props) { // Cambiar "navibar" a "Navibar"
         <>
             <Navbar bg="red" variant="light">
                 <Container>
-                    <Navbar.Brand href="/">
+                    <Navbar.Brand href="/p1">
                         <img
                             src={logo}
                             width="150"
@@ -18,7 +18,7 @@ function Navibar(props) { // Cambiar "navibar" a "Navibar"
                         />
                     </Navbar.Brand>
                     <Nav className="me-auto" style={{ fontSize: 17 }}>
-                        <Nav.Link href="/">Mi Menu</Nav.Link>
+                        <Nav.Link href="/p1">Mi Menu</Nav.Link>
                         <NavDropdown title="Perfil" id="basic-nav-dropdown">
                             <NavDropdown.Item href="/Carro">Mi Carrito</NavDropdown.Item>
                             <NavDropdown.Divider />
