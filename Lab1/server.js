@@ -1,6 +1,7 @@
+//Dependencias y Configuración
 const express = require('express');
 const { buildSchema } = require('graphql');
-const { graphqlHTTP } = require('express-graphql');
+const { graphqlHTTP } = require('express-graphql'); // Middleware para manejar solicitudes GraphQL en rutas específicas.
 const cors = require('cors');
 
 let productos = require('./productos'); //poniendo "let" le damos la cualidad de que el esquema responda
@@ -9,7 +10,7 @@ let productos = require('./productos'); //poniendo "let" le damos la cualidad de
 const app = express();
 
 app.use(cors());
-//firmas
+//Esquema GraphQL
 const schema = buildSchema(`
     type Producto{
         id: ID!
@@ -55,12 +56,10 @@ const schema = buildSchema(`
         getProductos: [Producto]
         getProducto(id: ID!): Producto
     }
-`); // Plantillas
-//addCurso(input: CursoInput): Curso 
-//addCurso(titulo: String!, visitas: Int)
-//updateCurso(id: ID!, input: CursoInput): Curso
-//deleteCurso(id: ID!) : Alert
+`);
 
+
+//resolvers
 const root = { //aquí va todo el código relacionado a la conexión con la base de datos
     getProductos() {
         return productos;
@@ -96,7 +95,7 @@ const root = { //aquí va todo el código relacionado a la conexión con la base
     }
 }
 
-
+//Rutas y Middleware
 app.get('/', function (req, res) {
     //res.send("Bienvenido");
     res.json(productos);
@@ -109,7 +108,7 @@ app.use('/graphql', graphqlHTTP({
     graphiql: true
 }))
 
-
+//Servidor
 app.listen(8080, function () {
     console.log("Servidor Iniciado");
 })
