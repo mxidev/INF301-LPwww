@@ -1,0 +1,115 @@
+1. Registrar un Usuario
+
+mutation {
+  registrarUsuario(input: {
+    nombre: "Seba Salgadouu",
+    correo: "sebastian.s.polanco@hotmail.com",
+    direccion: "Calle Falsa 123",
+    rol: "Administrador",
+    password: "password123"
+  }) {
+    id
+    nombre
+    correo
+    rol
+    message
+  }
+}
+
+
+
+
+2. Login de Usuario
+
+mutation {
+  loginUsuario(correo: "sebastian.s.polanco@hotmail.com", password: "password123") {
+    id
+    nombre
+    correo
+    rol
+  }
+}
+
+3. Obtener Todos los Productos
+
+query {
+  getProductos {
+    id
+    descripcion
+    valor
+    stock
+    foto
+    carro
+  }
+}
+
+
+4. Obtener un Producto por ID
+
+query {
+  getProducto(id: "2") {
+    id
+    descripcion
+    valor
+    stock
+    foto
+    carro
+  }
+}
+
+5. Agregar un Producto
+
+mutation {
+  addProd(input: {
+    descripcion: "Producto Nuevo 2",
+    valor: 1500,
+    stock: 20,
+    carro: 0
+  }) {
+    id
+    descripcion
+    valor
+    stock
+    carro
+  }
+}
+
+6. Actualizar un Producto
+
+mutation {
+  updateProd(id: "2", input: {
+    descripcion: "Producto Actualizado",
+    valor: 1800,
+    stock: 25,
+    carro: 0
+  }) {
+    id
+    descripcion
+    valor
+    stock
+    carro
+  }
+}
+
+7. Eliminar un Producto
+
+mutation {
+  deleteProd(id: "1") {
+    message
+  }
+}
+
+8. Verificar Usuarios Registrados
+
+query {
+  getUsuarios {
+    id
+    nombre
+    correo
+    direccion
+    rol
+  }
+}
+
+
+

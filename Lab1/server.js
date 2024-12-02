@@ -75,6 +75,7 @@ const schema = buildSchema(`
     type Query {
         getProductos: [Producto]
         getProducto(id: ID!): Producto
+        getUsuarios: [Usuario]
     }
 `); // Plantillas
 //addCurso(input: CursoInput): Curso 
