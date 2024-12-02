@@ -16,21 +16,21 @@ export default function FooterPage (){
             <hr className="w-100 clearfix d-md-none" />
             {/* Grid column */}
             <div className="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
-              <h6 className="text-uppercase mb-4 font-weight-bold">Enlaces útiles</h6>
+              <h6 className="text-uppercase mb-4 font-weight-bold" style={{ color: '#FFD1AA' }}>Enlaces útiles</h6>
               <p>
-                <a href="https://usm.cl/">Página oficial UTFSM</a>
+                <a href="https://usm.cl/" style={{ color: '#FFD1AA' }}>Página oficial UTFSM</a>
               </p>
               <p>
-                <a href="/Ayuda">Ayuda</a>
+                <a href="/Ayuda" style={{ color: '#FFD1AA' }}>Ayuda</a>
               </p>
             </div>
             {/* Grid column */}
             <hr className="w-100 clearfix d-md-none" />
             {/* Grid column */}
             <div className="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
-              <h6 className="text-uppercase mb-4 font-weight-bold">Contacto</h6>
+              <h6 className="text-uppercase mb-4 font-weight-bold" style={{ color: '#FFD1AA' }}>Contacto</h6>
               <p>
-                <i className="fas fa-envelope mr-3" /><a style={{ color:"white" , textDecoration: "underline"}} href="mailto:soporte@gmail.com">soportefukusuke@gmail.com</a></p>
+                <i className="fas fa-envelope mr-3" /><a style={{ color: '#FFD1AA' , textDecoration: "underline"}} href="mailto:soporte@gmail.com">soportefukusuke@gmail.com</a></p>
             </div>
             {/* Grid column */}
           </div>
@@ -41,7 +41,7 @@ export default function FooterPage (){
             {/* Grid column */}
             <div className="col-md-7 col-lg-8">
               {/*Copyright*/}
-              <p className="text-center text-md-left">Copyright:
+              <p className="text-center text-md-left" style={{ color: '#FFD1AA' }}>Copyright:
                   <strong> Fukusuke Sushi-Delivery </strong>
               </p>
             </div>

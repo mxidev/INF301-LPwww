@@ -26,11 +26,11 @@ function navibar(props) {
         </Nav>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
-        <Navbar.Text style={{fontSize: 17, 'padding-right': '50px'}}>
+        <Navbar.Text style={{ fontSize: 17, 'padding-right': '50px'}}>
             <a href="/Carro">Mi Carrito</a>
             </Navbar.Text>
             <Navbar.Text style={{fontSize: 17}}>
-            Sesión de: <a href="/Perfil">LuFaSe</a>
+            Sesión de: <a href="/Perfil">Usuario</a>
             </Navbar.Text>
         </Navbar.Collapse>
 
