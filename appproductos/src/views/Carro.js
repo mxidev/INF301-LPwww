@@ -36,17 +36,17 @@ function Carro() {
     <div>
       <Container>
         <MDBContainer>
-          <h1 style={{  color: '#ff4411' , 'text-align': "center", 'padding':'20px' }}>Tu carro de compras</h1>
+          <h1 style={{  color: '#0D4D4D' , 'text-align': "center", 'padding':'20px' }}>Tu carro de compras</h1>
         </MDBContainer>
-      <div class="flexbox-container">
+      <div class="products" style={{'padding-bottom':'100px'}}>
         {load}
         {data &&
           data.getProductos.map((getProductos) => {
               if (getProductos.carro != 0){
-              return <div class="product-card" style={{ 'padding':'10px','border':'2px solid red'}}>
+              return <div class="product-card" style={{ 'padding':'10px','border':'2px solid rgb(13, 77, 77)'}}>
                 
                 
-              <div class="product-image" style={{'height':'auto','width':'auto', 'padding':'10px'}}>
+              <div class="product-image" style={{'height':200,'width':200, 'padding':'10px'}}>
                 <img class="foto" src={getProductos.foto} />
               </div>
               <div class="product-info" style= {{'padding-top':'12rem'}}>
