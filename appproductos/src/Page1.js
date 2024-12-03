@@ -39,17 +39,17 @@ function Page1() {
     <div>
       <Container>
         <MDBContainer>
-          <h1 style={{  color: '#ff4411' , 'text-align': "center", 'padding':'20px' }}>Catálogo de Productos</h1>
+          <h1 style={{  color: '#AA3939' , 'text-align': "center", 'padding':'20px' }}>Catálogo de Productos</h1>
         </MDBContainer>
       <div class="products" style={{'padding-bottom':'100px'}}>
         {load}
         {data &&
           data.getProductos.map((getProductos) => {
              
-              return <div class="product-card" style={{ 'padding':'10px','border':'2px solid red'}}>
+              return <div class="product-card" style={{ 'padding':'10px','border':'2px solid rgb(170, 57, 57)'}}>
                 
                 
-                <div class="product-image" style={{'height':'auto','width':'auto', 'padding':'10px'}}>
+                <div class="product-image" style={{'height':200,'width':200, 'padding':'10px'}}>
                   <img class="foto" src={getProductos.foto} />
                 </div>
                 <div class="product-info" style= {{'padding-top':'12rem'}}>
