@@ -46,7 +46,7 @@ function Carro() {
               return <div class="product-card" style={{ 'padding':'10px','border':'2px solid rgb(13, 77, 77)''}}>
                 
                 
-              <div class="product-image" style={{'height':'auto','width':'auto', 'padding':'10px'}}>
+              <div class="product-image" style={{'height':200,'width':200, 'padding':'10px'}}>
                 <img class="foto" src={getProductos.foto} />
               </div>
               <div class="product-info" style= {{'padding-top':'12rem'}}>
