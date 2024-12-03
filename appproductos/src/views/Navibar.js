@@ -1,7 +1,7 @@
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import '../views/assets/styles/bootstrap.min.css';
 import { useUser } from "../UserContext";
-import logo from '../views/assets//logoinf.png';
+import logo from '../views/assets//logo.png';
 
 function Navibar(props) { // Cambiar "navibar" a "Navibar"
     const { user } = useUser(); // Asegúrate de usar la variable correcta "user" en lugar de "User"
